@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.request.RequestOptions
+import jp.wasabeef.glide.transformations.CropCircleWithBorderTransformation
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.movie_item.view.*
 import vinova.drey.movie.R
 import vinova.drey.movie.api.Const
-import vinova.drey.movie.api.Const.IMAGE_URL
 import vinova.drey.movie.model.Movie
 
 class MoviesAdapter(
@@ -41,7 +43,7 @@ class MoviesAdapter(
     }
 
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "CheckResult")
         fun bind(item: Movie) {
             itemView.titleText.text = item.title
             itemView.overviewText.text = item.overview + "..."
@@ -49,7 +51,7 @@ class MoviesAdapter(
             val moviePosterURL = Const.IMAGE_URL + item.posterPath
             Glide.with(itemView.context)
                 .load(moviePosterURL)
-                .transform(CenterCrop())
+                .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(10,5)))
                 .into(itemView.imagePoster);
 
             itemView.setOnClickListener{

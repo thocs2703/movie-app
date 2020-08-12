@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="title_font">20sp</dimen>
+    <dimen name="standard_margin">16dp</dimen>
+    <dimen name="standard_half_margin">8dp</dimen>
+    <dimen name="large_title_font">30sp</dimen>
+    <dimen name="poster_height">424dp</dimen>
+    <dimen name="btn_trailer_play_size">56dp</dimen>
+    <dimen name="status_bar_height">24dp</dimen>
+    <dimen name="large_margin">24dp</dimen>
+</resources>

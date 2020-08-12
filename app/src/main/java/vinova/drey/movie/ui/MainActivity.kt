@@ -43,27 +43,27 @@ class MainActivity : AppCompatActivity() {
         moviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie)}
         recycler_list_movie.adapter = moviesAdapter
 
-        val intent = YouTubeStandalonePlayer.createVideoIntent(this, Const.YOUTUBE_API, "NhWg7AQLI_8")
-        startActivity(intent)
+//        val intent = YouTubeStandalonePlayer.createVideoIntent(this, Const.YOUTUBE_API, "NhWg7AQLI_8")
+//        startActivity(intent)
 
-        youTubePlayerFragment = fragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerFragment
-        youTubePlayerFragment.initialize(Const.YOUTUBE_API, object: YouTubePlayer.OnInitializedListener{
-            override fun onInitializationSuccess(
-                p0: YouTubePlayer.Provider?,
-                p1: YouTubePlayer?,
-                p2: Boolean
-            ) {
-
-            }
-
-            override fun onInitializationFailure(
-                p0: YouTubePlayer.Provider?,
-                p1: YouTubeInitializationResult?
-            ) {
-
-            }
-
-        })
+//        youTubePlayerFragment = fragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerFragment
+//        youTubePlayerFragment.initialize(Const.YOUTUBE_API, object: YouTubePlayer.OnInitializedListener{
+//            override fun onInitializationSuccess(
+//                p0: YouTubePlayer.Provider?,
+//                p1: YouTubePlayer?,
+//                p2: Boolean
+//            ) {
+//
+//            }
+//
+//            override fun onInitializationFailure(
+//                p0: YouTubePlayer.Provider?,
+//                p1: YouTubeInitializationResult?
+//            ) {
+//
+//            }
+//
+//        })
 
         getListMovies()
 

@@ -7,6 +7,7 @@
     <string name="title">Title</string>
     <string name="overview">Overview</string>
     <string name="connection_problem">Connection Problem !!</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="read_more">Read more</string>
+    <string name="release_date">Release Date</string>
 </resources>
