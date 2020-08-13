@@ -19,7 +19,7 @@
         <item name="android:textSize">@dimen/large_title_font</item>
     </style>
 
-    <style name="RatingBar" parent="Theme.AppCompat">
+    <style name="RatingBar" parent="@style/Widget.AppCompat.RatingBar.Small">
         <item name="colorControlNormal">#C7C7C7</item>
         <item name="colorControlActivated">#FDC723</item>
     </style>

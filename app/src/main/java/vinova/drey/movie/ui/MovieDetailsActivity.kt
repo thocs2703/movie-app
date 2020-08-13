@@ -1,24 +1,20 @@
 package vinova.drey.movie.ui
 
 import android.content.ContentValues.TAG
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.google.android.youtube.player.*
-import kotlinx.android.synthetic.main.movie_detail.*
-import kotlinx.android.synthetic.main.movie_item.*
-import org.w3c.dom.Text
 import vinova.drey.movie.R
-import vinova.drey.movie.api.Const
+import vinova.drey.movie.model.Movie
+import vinova.drey.movie.model.Youtube
+import vinova.drey.movie.repository.MoviesRepository
+import vinova.drey.movie.repository.TrailerRepository
+import vinova.drey.movie.util.Const
+import kotlin.properties.Delegates
 
 
 class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
@@ -32,11 +28,14 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
     private lateinit var playImage: ImageView
 
     private lateinit var playerView: YouTubePlayerView
+    private lateinit var sourceTrailer: String
 //    lateinit var youTubePlayerG: YouTubePlayer
+
+    private var id: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.movie_detail_v2)
+        setContentView(R.layout.movie_detail)
 
 //        binding = DataBindingUtil.setContentView(this, R.layout.movie_detail)
 
@@ -56,14 +55,17 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
 
 //        playerView = YouTubePlayerView(this)
 
-        playerView.initialize(Const.YOUTUBE_API, this)
+        getTrailer()
+
+//        playerView.initialize(Const.YOUTUBE_API, this)
 
 
 //        binding.executePendingBindings()
     }
 
     private fun getMovieDetails(extras: Bundle) {
-
+        id = (extras.getInt(Const.MOVIE_ID))
+        Log.d("MovieDetailsActivity", "MovieID: $id")
         titleText.text = extras.getString(Const.MOVIE_TITLE)
         overviewText.text = extras.getString(Const.MOVIE_OVERVIEW)
         Log.d("MovieDetailsActivity", "Overview: ${extras.getString(Const.MOVIE_OVERVIEW)}")
@@ -100,7 +102,7 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
         youTubePlayer?.setPlaybackEventListener(playbackEventListener)
 
         if (!wasRestored) {
-            youTubePlayer?.cueVideo("fis-9Zqu2Ro")
+            youTubePlayer?.cueVideo(sourceTrailer)
         }
     }
 
@@ -114,6 +116,26 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
             val errorMessage = "There was an error initializing the YoutubePlayer ($youTubeInitializationResult)"
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun getTrailer() {
+        Log.d("MovieDetailsActivity", "Get Trailer")
+        TrailerRepository.getTrailer(
+            id,
+            ::onTrailerFetched,
+            ::onError
+        )
+    }
+
+    private fun onTrailerFetched(youtubeSources: List<Youtube>) {
+        val firstTrailer: Youtube = youtubeSources[0]
+        sourceTrailer = firstTrailer.source
+        playerView.initialize(Const.YOUTUBE_API, this)
+        Log.d("MovieDetailsActivity", "SourceTrailer: ${sourceTrailer}")
+    }
+
+    private fun onError() {
+        Log.d("MovieDetailsActivity", "Fetched Trailer Error!")
     }
 
     private val playbackEventListener = object: YouTubePlayer.PlaybackEventListener {

@@ -5,16 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
-import com.google.android.youtube.player.YouTubeStandalonePlayer
 import kotlinx.android.synthetic.main.activity_main.*
 import vinova.drey.movie.R
-import vinova.drey.movie.api.Const
+import vinova.drey.movie.adapter.MoviesAdapter
+import vinova.drey.movie.util.Const
 import vinova.drey.movie.model.Movie
 import vinova.drey.movie.repository.MoviesRepository
 
@@ -40,7 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         recycler_list_movie.layoutManager = moviesLayoutMgr
 
-        moviesAdapter = MoviesAdapter(mutableListOf()) { movie -> showMovieDetails(movie)}
+        moviesAdapter =
+            MoviesAdapter(mutableListOf()) { movie ->
+                showMovieDetails(movie)
+            }
         recycler_list_movie.adapter = moviesAdapter
 
 //        val intent = YouTubeStandalonePlayer.createVideoIntent(this, Const.YOUTUBE_API, "NhWg7AQLI_8")
@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMovieDetails(movie: Movie) {
         val intent = Intent(this, MovieDetailsActivity::class.java)
+        intent.putExtra(Const.MOVIE_ID, movie.id)
         intent.putExtra(Const.MOVIE_BACKDROP, movie.backdropPath)
         intent.putExtra(Const.MOVIE_POSTER, movie.posterPath)
         intent.putExtra(Const.MOVIE_TITLE, movie.title)

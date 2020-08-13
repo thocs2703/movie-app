@@ -1,4 +1,4 @@
-package vinova.drey.movie.api
+package vinova.drey.movie.util
 
 object Const {
     const val BASE_URL = "https://api.themoviedb.org/3/"
@@ -6,6 +6,7 @@ object Const {
     const val IMAGE_URL = "https://image.tmdb.org/t/p/w500"
     const val YOUTUBE_API = "AIzaSyA-eNn-kgt7nxOA1qLmXGIURkdyIjgvdfE" // https://www.youtube.com/watch?v={key}
 
+    const val MOVIE_ID = "extra_movie_id"
     const val MOVIE_BACKDROP = "extra_movie_backdrop"
     const val MOVIE_POSTER = "extra_movie_poster"
     const val MOVIE_TITLE = "extra_movie_title"
