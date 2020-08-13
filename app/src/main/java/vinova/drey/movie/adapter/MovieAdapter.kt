@@ -1,6 +1,5 @@
 package vinova.drey.movie.adapter
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
-import kotlinx.android.synthetic.main.item_video.view.*
 import kotlinx.android.synthetic.main.item_poster.view.*
+import kotlinx.android.synthetic.main.item_video.view.*
 import vinova.drey.movie.R
-import vinova.drey.movie.util.Const
 import vinova.drey.movie.model.Movie
 import vinova.drey.movie.model.Youtube
+import vinova.drey.movie.util.Const
 
 class MoviesAdapter(
     private var movies: MutableList<Movie>,
@@ -100,6 +99,7 @@ class MoviesAdapter(
                 .load(backdropURL)
                 .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(10, 5)))
                 .into(itemView.backdrop_image);
+            itemView.play_image.visibility = View.VISIBLE
             itemView.play_image.setOnClickListener {
                 onMovieClick.invoke(movie)
             }
@@ -108,5 +108,10 @@ class MoviesAdapter(
         override fun bind(trailer: Youtube) {
 
         }
+    }
+
+    fun clear() {
+        movies.clear()
+        notifyDataSetChanged()
     }
 }

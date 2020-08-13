@@ -1,12 +1,17 @@
 package vinova.drey.movie.ui
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import vinova.drey.movie.R
@@ -19,14 +24,20 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var moviesLayoutMgr: LinearLayoutManager
-    private lateinit var youTubePlayerFragment: YouTubePlayerFragment
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
     private var page = 1
+
+    private lateinit var swipeContainer: SwipeRefreshLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        progressBar = findViewById(R.id.progress_bar)
+//        progressBar.visibility = View.VISIBLE
 
         moviesLayoutMgr = LinearLayoutManager(
             this,
@@ -34,39 +45,30 @@ class MainActivity : AppCompatActivity() {
             false
         )
 
+        recyclerView = findViewById(R.id.recycler_list_movie)
+        recyclerView.layoutManager = moviesLayoutMgr
 
-        recycler_list_movie.layoutManager = moviesLayoutMgr
+        setItemsData()
+        recyclerView.adapter = moviesAdapter
 
-        moviesAdapter =
-            MoviesAdapter(mutableListOf()) { movie ->
-                showMovieDetails(movie)
-            }
-        recycler_list_movie.adapter = moviesAdapter
+        swipeContainer = findViewById(R.id.swipe_container)
+        refreshLayout()
+
 
 //        val intent = YouTubeStandalonePlayer.createVideoIntent(this, Const.YOUTUBE_API, "NhWg7AQLI_8")
 //        startActivity(intent)
 
-//        youTubePlayerFragment = fragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerFragment
-//        youTubePlayerFragment.initialize(Const.YOUTUBE_API, object: YouTubePlayer.OnInitializedListener{
-//            override fun onInitializationSuccess(
-//                p0: YouTubePlayer.Provider?,
-//                p1: YouTubePlayer?,
-//                p2: Boolean
-//            ) {
-//
-//            }
-//
-//            override fun onInitializationFailure(
-//                p0: YouTubePlayer.Provider?,
-//                p1: YouTubeInitializationResult?
-//            ) {
-//
-//            }
-//
-//        })
 
         getListMovies()
 
+    }
+
+    private fun setItemsData() {
+        moviesAdapter =
+            MoviesAdapter(mutableListOf()) { movie ->
+                showMovieDetails(movie)
+            }
+//        progressBar.visibility = View.GONE
     }
 
     private fun showMovieDetails(movie: Movie) {
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun attachListMoviesOnScrollListener() {
-        recycler_list_movie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val totalItemCount = moviesLayoutMgr.itemCount // init = 20
 //                val visibleItemCount = moviesLayoutMgr.childCount // init = 2
@@ -110,12 +112,30 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "First Visible Count: $firstVisibleItem")
 
                 if (firstVisibleItem >= totalItemCount / 2) {
-                    recycler_list_movie.removeOnScrollListener(this)
+                    recyclerView.removeOnScrollListener(this)
                     page++
                     getListMovies()
                 }
             }
         })
+    }
+
+    private fun refreshLayout(){
+        swipeContainer.setProgressBackgroundColorSchemeColor(
+            ContextCompat.getColor(
+                this,
+                R.color.colorPrimary
+            )
+        )
+        swipeContainer.setColorSchemeColors(Color.WHITE)
+
+        swipeContainer.setOnRefreshListener {
+            moviesAdapter.clear()
+            getListMovies()
+            setItemsData()
+            recyclerView.adapter = moviesAdapter
+            swipeContainer.isRefreshing = false
+        }
     }
 
 }

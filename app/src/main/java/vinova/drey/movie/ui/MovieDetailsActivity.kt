@@ -1,12 +1,12 @@
 package vinova.drey.movie.ui
 
 import android.content.ContentValues.TAG
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
-import android.widget.Toast
+import android.view.MenuItem
+import android.widget.*
+import androidx.annotation.RequiresApi
 import com.google.android.youtube.player.*
 import vinova.drey.movie.R
 import vinova.drey.movie.model.Movie
@@ -24,43 +24,49 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
     private lateinit var overviewText: TextView
     private lateinit var releaseDateText: TextView
     private lateinit var rating: RatingBar
-    private lateinit var posterImage: ImageView
-    private lateinit var playImage: ImageView
+    private lateinit var goBack: TextView
 
     private lateinit var playerView: YouTubePlayerView
     private lateinit var sourceTrailer: String
 //    lateinit var youTubePlayerG: YouTubePlayer
 
+
     private var id: Int = 0
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail)
+
 
 //        binding = DataBindingUtil.setContentView(this, R.layout.movie_detail)
 
         getView()
 
         val extras = intent.extras
-
         if (extras != null) getMovieDetails(extras) else finish()
-
-//        playImage.setOnClickListener {
-//            val intent =
-//                YouTubeStandalonePlayer.createVideoIntent(this, Const.YOUTUBE_API, "NhWg7AQLI_8")
-//            startActivity(intent)
-//        }
-
-//        youTubePlayerView.initialize(Const.YOUTUBE_API, this)
-
-//        playerView = YouTubePlayerView(this)
 
         getTrailer()
 
+        goBack.text = titleText.text
+        goBack.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_back, 0, 0, 0);
+        goBack.setOnClickListener {
+            super.onBackPressed()
+        }
+
 //        playerView.initialize(Const.YOUTUBE_API, this)
 
-
 //        binding.executePendingBindings()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return false
     }
 
     private fun getMovieDetails(extras: Bundle) {
@@ -86,9 +92,8 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
         overviewText = findViewById(R.id.overview_text)!!
         releaseDateText = findViewById(R.id.release_data_text)!!
         rating = findViewById(R.id.movie_rating)!!
-//        posterImage = findViewById(R.id.poster_image)!!
-//        playImage = findViewById(R.id.play_image)!!
         playerView = findViewById(R.id.player_youtube)!!
+        goBack = findViewById(R.id.actionbar_title)
     }
 
 

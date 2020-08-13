@@ -11,7 +11,7 @@
         android:id="@+id/imagePoster"
         android:layout_width="200dp"
         android:layout_height="280dp"
-        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_half_margin"
         android:layout_marginTop="@dimen/large_margin"
         android:src="@drawable/poster"
         app:layout_constraintStart_toStartOf="parent"

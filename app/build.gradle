@@ -73,4 +73,7 @@ dependencies {
 
     implementation 'jp.wasabeef:glide-transformations:4.1.0'
 
+    // SwipRefereshLayout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
 }

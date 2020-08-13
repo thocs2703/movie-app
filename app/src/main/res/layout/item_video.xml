@@ -6,17 +6,20 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:layout_marginTop="@dimen/large_margin"
+        android:adjustViewBounds="true"
         android:id="@+id/backdrop_image"
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_half_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/backdrop" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/play_image"
         android:layout_width="@dimen/btn_trailer_play_size"
         android:layout_height="@dimen/btn_trailer_play_size"

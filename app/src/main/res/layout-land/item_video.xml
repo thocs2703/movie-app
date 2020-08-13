@@ -6,9 +6,11 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:adjustViewBounds="true"
         android:id="@+id/backdrop_image"
         android:layout_width="450dp"
         android:layout_height="300dp"
+        android:layout_marginStart="@dimen/standard_half_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/backdrop" />
@@ -30,7 +32,7 @@
         android:id="@+id/title_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/standard_half_margin"
         android:layout_marginEnd="@dimen/standard_half_margin"
         android:maxLines="3"
         android:text="@string/title"
@@ -38,11 +40,9 @@
         android:textColor="#FFF"
         android:textSize="@dimen/title_font"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/backdrop_image"
-        app:layout_constraintTop_toTopOf="@+id/play_image" />
+        app:layout_constraintStart_toEndOf="@+id/backdrop_image" />
 
     <TextView
         android:id="@+id/overview_text"
