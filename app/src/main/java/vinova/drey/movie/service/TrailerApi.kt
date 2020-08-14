@@ -1,53 +1,55 @@
 package vinova.drey.movie.service
 
+import android.util.Log
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 import vinova.drey.movie.api.Api
 import vinova.drey.movie.model.Trailer
 import vinova.drey.movie.model.Youtube
 import vinova.drey.movie.util.Constant
 
-object TrailerApi {
-    private val api: Api
+interface TrailerApi {
+    companion object{
+        private var instance : TrailerApi? = null
 
-    // Call when instance is initialized
-    init {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        private fun create(): TrailerApi {
+            val logger = HttpLoggingInterceptor()
+            logger.level = HttpLoggingInterceptor.Level.BASIC
 
-        api = retrofit.create(Api::class.java)
+            val client = OkHttpClient.Builder()
+                .addInterceptor(logger)
+                .build()
+            return Retrofit.Builder()
+                .baseUrl(Constant.BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(TrailerApi::class.java)
+        }
+
+        fun getInstance() : TrailerApi{
+            if (instance == null){
+                synchronized(TrailerApi::class.java){
+                    instance = create()
+                    Log.d("TrailerApi", "$instance")
+                }
+            }
+            return instance!!
+        }
     }
 
+    @GET("movie/{id}/trailers")
     fun getTrailer(
-        id: Int,
-        onSuccess: (movies: List<Youtube>) -> Unit, // Unit-> doesn't return anything, but accept a list of movies
-        onError: () -> Unit // Doesn't accept any thing
-    ) {
-        api.getTrailer(id)
-            .enqueue(object : Callback<Trailer> {
-                override fun onResponse(
-                    call: Call<Trailer>,
-                    response: Response<Trailer>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
+        @Path("id") id: Int,
+        @Query("api_key") token: String = Constant.API_KEY
+    ): Call<Trailer>
 
-                        if (responseBody != null) {
-                            onSuccess.invoke(responseBody.youtube) // Invoke is how execute a high-order function
-                        } else {
-                            onError.invoke()
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<Trailer>, t: Throwable) {
-                    onError.invoke()
-                }
-            })
-    }
 }

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,11 +14,11 @@ import vinova.drey.movie.R
 import vinova.drey.movie.adapter.MoviesAdapter
 import vinova.drey.movie.util.Constant
 import vinova.drey.movie.model.MovieDetail
-import vinova.drey.movie.module.movie.IMovieView
-import vinova.drey.movie.module.movie.MoviePresenter
-import vinova.drey.movie.service.MovieApi
+import vinova.drey.movie.model.Movies
+import vinova.drey.movie.module.main.IHomeView
+import vinova.drey.movie.module.main.HomePresenter
 
-class MainActivity : AppCompatActivity(), IMovieView {
+class HomeActivity : AppCompatActivity(), IHomeView {
 
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var moviesLayoutMgr: LinearLayoutManager
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity(), IMovieView {
 
     private lateinit var swipeContainer: SwipeRefreshLayout
 
-    private lateinit var moviePresenter: MoviePresenter
+    private lateinit var homePresenter: HomePresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,10 +48,11 @@ class MainActivity : AppCompatActivity(), IMovieView {
 
     private fun init() {
         Log.d("MainActivity", "Movie Presenter init")
-        moviePresenter = MoviePresenter()
-        moviePresenter.attachView(this)
-        Log.d("MainActivity", "Movie Presenter Is View Attached: ${moviePresenter.isViewAttached()}")
-        moviePresenter.getListMovie()
+        homePresenter = HomePresenter()
+        homePresenter.attachView(this)
+        Log.d("MainActivity", "Movie Presenter Is View : ${homePresenter.isViewAttached()}")
+        homePresenter.page = page
+        homePresenter.getListMovie()
     }
 
     private fun setItemsData() {
@@ -103,7 +103,8 @@ class MainActivity : AppCompatActivity(), IMovieView {
                 if (firstVisibleItem >= totalItemCount / 2) {
                     recyclerView.removeOnScrollListener(this)
                     page++
-                    moviePresenter.getListMovie()
+                    homePresenter.page = page
+                    homePresenter.getListMovie()
                 }
             }
         })
@@ -121,7 +122,8 @@ class MainActivity : AppCompatActivity(), IMovieView {
 
         swipeContainer.setOnRefreshListener {
             moviesAdapter.clear()
-            moviePresenter.getListMovie()
+            homePresenter.page = 1
+            homePresenter.getListMovie()
             setItemsData()
             recyclerView.adapter = moviesAdapter
             swipeContainer.isRefreshing = false
@@ -130,10 +132,10 @@ class MainActivity : AppCompatActivity(), IMovieView {
 
     override fun onDestroy() {
         super.onDestroy()
-        moviePresenter.detachView()
+        homePresenter.detachView()
     }
 
-    override fun onLoadMovieSuccess(movies: List<MovieDetail>) {
+    override fun onLoadMovieSuccess(movies: Movies) {
         Log.d("MainActivity", "Load Movie Success")
         moviesAdapter.appendMovies(movies)
         attachListMoviesOnScrollListener()

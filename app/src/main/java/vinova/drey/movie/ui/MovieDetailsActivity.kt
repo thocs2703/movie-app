@@ -4,17 +4,18 @@ import android.content.ContentValues.TAG
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import android.widget.*
 import androidx.annotation.RequiresApi
 import com.google.android.youtube.player.*
 import vinova.drey.movie.R
+import vinova.drey.movie.model.Trailer
 import vinova.drey.movie.model.Youtube
-import vinova.drey.movie.service.TrailerApi
+import vinova.drey.movie.module.detail.DetailPresenter
+import vinova.drey.movie.module.detail.IDetailView
 import vinova.drey.movie.util.Constant
 
 
-class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
+class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener, IDetailView {
 
     //    private lateinit var binding: MovieDetailBinding
     private lateinit var titleText: TextView
@@ -27,14 +28,14 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
     private lateinit var sourceTrailer: String
 //    lateinit var youTubePlayerG: YouTubePlayer
 
+    private lateinit var detailPresenter: DetailPresenter
 
-    private var id: Int = 0
+    var movieId: Int = 0
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail)
-
 
 //        binding = DataBindingUtil.setContentView(this, R.layout.movie_detail)
 
@@ -43,7 +44,7 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
         val extras = intent.extras
         if (extras != null) getMovieDetails(extras) else finish()
 
-        getTrailer()
+        init()
 
         goBack.text = titleText.text
         goBack.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_back, 0, 0, 0);
@@ -51,24 +52,24 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
             super.onBackPressed()
         }
 
-//        playerView.initialize(Const.YOUTUBE_API, this)
-
-//        binding.executePendingBindings()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-        }
-        return false
+    private fun init(){
+        detailPresenter = DetailPresenter()
+        detailPresenter.attachView(this)
+        Log.d("DetailPresenterInit", "Movie's Id $movieId")
+        detailPresenter.id = movieId
+        detailPresenter.getTrailer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        detailPresenter.detachView()
     }
 
     private fun getMovieDetails(extras: Bundle) {
-        id = (extras.getInt(Constant.MOVIE_ID))
-        Log.d("MovieDetailsActivity", "MovieID: $id")
+        movieId = (extras.getInt(Constant.MOVIE_ID))
+        Log.d("MovieDetailsActivity", "MovieID: $movieId")
         titleText.text = extras.getString(Constant.MOVIE_TITLE)
         overviewText.text = extras.getString(Constant.MOVIE_OVERVIEW)
         Log.d("MovieDetailsActivity", "Overview: ${extras.getString(Constant.MOVIE_OVERVIEW)}")
@@ -76,12 +77,6 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
         rating.rating = extras.getFloat(Constant.MOVIE_RATING, 0f)
         releaseDateText.text = extras.getString(Constant.MOVIE_RELEASE_DATE)
 
-//        extras.getString(Const.MOVIE_POSTER)?.let {
-//            Glide.with(this)
-//                .load(Const.IMAGE_URL + it)
-//                .transform(CenterCrop())
-//                .into(posterImage)
-//        }
     }
 
     private fun getView() {
@@ -120,24 +115,11 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
         }
     }
 
-    private fun getTrailer() {
-        Log.d("MovieDetailsActivity", "Get Trailer")
-        TrailerApi.getTrailer(
-            id,
-            ::onTrailerFetched,
-            ::onError
-        )
-    }
-
     private fun onTrailerFetched(youtubeSources: List<Youtube>) {
         val firstTrailer: Youtube = youtubeSources[0]
         sourceTrailer = firstTrailer.source
         playerView.initialize(Constant.YOUTUBE_API, this)
         Log.d("MovieDetailsActivity", "SourceTrailer: ${sourceTrailer}")
-    }
-
-    private fun onError() {
-        Log.d("MovieDetailsActivity", "Fetched Trailer Error!")
     }
 
     private val playbackEventListener = object: YouTubePlayer.PlaybackEventListener {
@@ -175,6 +157,23 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
 
         override fun onError(p0: YouTubePlayer.ErrorReason?) {
         }
+    }
+
+    override fun onLoadTrailerSuccess(trailer: Trailer) {
+        onTrailerFetched(trailer.youtube)
+    }
+
+    override fun onError(msg: String) {
+
+    }
+
+    override fun showError(msg: String) {
+    }
+
+    override fun showProgress() {
+    }
+
+    override fun hideProgress() {
     }
 
 }

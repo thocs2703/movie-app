@@ -19,10 +19,12 @@ object ApiRequestHelper {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 if (response.isSuccessful) {
                     Log.d("ApiRequestHelper", "Success")
-                    onSuccess(response.body())
+                    val body = response.body()
+                    onSuccess(body)
 //                    Log.d("ApiRequestHelper", "${response.body()}")
                 } else {
-                    onError("error code: ${response.code()}")
+                    Log.d("ApiRequestHelper", "Error")
+//                    onError("error code: ${response.code()}")
 //                    Log.d("ApiRequestHelper", "${response.code()}")
                 }
             }

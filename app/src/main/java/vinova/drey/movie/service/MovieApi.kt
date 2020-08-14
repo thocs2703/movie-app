@@ -51,5 +51,5 @@ interface MovieApi {
     fun getListMovies(
         @Query("api_key") apiKey: String = Constant.API_KEY,
         @Query("page") page: Int
-    ): Call<List<MovieDetail>>
+    ): Call<Movies>
 }

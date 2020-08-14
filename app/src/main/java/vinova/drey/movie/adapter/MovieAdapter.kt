@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.item_poster.view.*
 import kotlinx.android.synthetic.main.item_video.view.*
 import vinova.drey.movie.R
 import vinova.drey.movie.model.MovieDetail
+import vinova.drey.movie.model.Movies
 import vinova.drey.movie.model.Youtube
 import vinova.drey.movie.util.Constant
 
@@ -53,11 +54,12 @@ class MoviesAdapter(
         holder.bind(movies[position])
     }
 
-    fun appendMovies(movies: List<MovieDetail>) {
-        this.movies.addAll(movies)
+    fun appendMovies(movies: Movies) {
+        val listMovies = movies.movies
+        this.movies.addAll(listMovies)
         notifyItemRangeInserted(
             this.movies.size,
-            movies.size - 1
+            listMovies.size - 1
         )
     }
 
