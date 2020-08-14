@@ -2,7 +2,7 @@ Week 1 Project: Flicks
 
 ![](http://learning.coderschool.vn/course_images/_intro_to_android/movie_db1.gif)
 
- 
+![](http://learning.coderschool.vn/course_images/_intro_to_android/movie_db2.gif)
 
 
 
