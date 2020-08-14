@@ -1,4 +1,4 @@
-package com.example.basemvp.base
+package vinova.drey.movie.base
 
 open class BasePresenter<V> : IPresenter<V> {
     private var view: V? = null

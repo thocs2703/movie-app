@@ -5,22 +5,21 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.youtube.player.YouTubePlayerFragment
-import kotlinx.android.synthetic.main.activity_main.*
 import vinova.drey.movie.R
 import vinova.drey.movie.adapter.MoviesAdapter
-import vinova.drey.movie.util.Const
-import vinova.drey.movie.model.Movie
-import vinova.drey.movie.repository.MoviesRepository
+import vinova.drey.movie.util.Constant
+import vinova.drey.movie.model.MovieDetail
+import vinova.drey.movie.module.movie.IMovieView
+import vinova.drey.movie.module.movie.MoviePresenter
+import vinova.drey.movie.service.MovieApi
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IMovieView {
 
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var moviesLayoutMgr: LinearLayoutManager
@@ -31,14 +30,40 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var swipeContainer: SwipeRefreshLayout
 
+    private lateinit var moviePresenter: MoviePresenter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        init()
 //        progressBar = findViewById(R.id.progress_bar)
 //        progressBar.visibility = View.VISIBLE
 
+        adapt()
+
+        refreshLayout()
+
+    }
+
+    private fun init() {
+        Log.d("MainActivity", "Movie Presenter init")
+        moviePresenter = MoviePresenter()
+        moviePresenter.attachView(this)
+        Log.d("MainActivity", "Movie Presenter Is View Attached: ${moviePresenter.isViewAttached()}")
+        moviePresenter.getListMovie()
+    }
+
+    private fun setItemsData() {
+        moviesAdapter =
+            MoviesAdapter(mutableListOf()) { movie ->
+                showMovieDetails(movie)
+            }
+        Log.d("MainActivity", "Movie Adapter: ${moviesAdapter.itemCount}")
+    }
+
+    private fun adapt(){
         moviesLayoutMgr = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -50,61 +75,25 @@ class MainActivity : AppCompatActivity() {
 
         setItemsData()
         recyclerView.adapter = moviesAdapter
-
-        swipeContainer = findViewById(R.id.swipe_container)
-        refreshLayout()
-
-
-//        val intent = YouTubeStandalonePlayer.createVideoIntent(this, Const.YOUTUBE_API, "NhWg7AQLI_8")
-//        startActivity(intent)
-
-
-        getListMovies()
-
     }
 
-    private fun setItemsData() {
-        moviesAdapter =
-            MoviesAdapter(mutableListOf()) { movie ->
-                showMovieDetails(movie)
-            }
-//        progressBar.visibility = View.GONE
-    }
-
-    private fun showMovieDetails(movie: Movie) {
+    private fun showMovieDetails(movie: MovieDetail) {
         val intent = Intent(this, MovieDetailsActivity::class.java)
-        intent.putExtra(Const.MOVIE_ID, movie.id)
-        intent.putExtra(Const.MOVIE_BACKDROP, movie.backdropPath)
-        intent.putExtra(Const.MOVIE_POSTER, movie.posterPath)
-        intent.putExtra(Const.MOVIE_TITLE, movie.title)
-        intent.putExtra(Const.MOVIE_RATING, movie.rating)
-        intent.putExtra(Const.MOVIE_RELEASE_DATE, movie.releaseDate)
-        intent.putExtra(Const.MOVIE_OVERVIEW, movie.overview)
+        intent.putExtra(Constant.MOVIE_ID, movie.id)
+        intent.putExtra(Constant.MOVIE_BACKDROP, movie.backdropPath)
+        intent.putExtra(Constant.MOVIE_POSTER, movie.posterPath)
+        intent.putExtra(Constant.MOVIE_TITLE, movie.title)
+        intent.putExtra(Constant.MOVIE_RATING, movie.rating)
+        intent.putExtra(Constant.MOVIE_RELEASE_DATE, movie.releaseDate)
+        intent.putExtra(Constant.MOVIE_OVERVIEW, movie.overview)
         startActivity(intent)
     }
 
-    private fun getListMovies() {
-        MoviesRepository.getListMovies(
-            page,
-            ::onListMoviesFetched,
-            ::onError
-        )
-    }
-
-    private fun onListMoviesFetched(movies: List<Movie>) {
-        moviesAdapter.appendMovies(movies)
-        attachListMoviesOnScrollListener()
-    }
-
-    private fun onError() {
-        Toast.makeText(this, getString(R.string.error_fetch_movies), Toast.LENGTH_SHORT).show()
-    }
 
     private fun attachListMoviesOnScrollListener() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val totalItemCount = moviesLayoutMgr.itemCount // init = 20
-//                val visibleItemCount = moviesLayoutMgr.childCount // init = 2
                 val firstVisibleItem = moviesLayoutMgr.findFirstVisibleItemPosition() // init = 0
 
                 Log.d("MainActivity", "Total Item Count: $totalItemCount")
@@ -114,13 +103,14 @@ class MainActivity : AppCompatActivity() {
                 if (firstVisibleItem >= totalItemCount / 2) {
                     recyclerView.removeOnScrollListener(this)
                     page++
-                    getListMovies()
+                    moviePresenter.getListMovie()
                 }
             }
         })
     }
 
-    private fun refreshLayout(){
+    private fun refreshLayout() {
+        swipeContainer = findViewById(R.id.swipe_container)
         swipeContainer.setProgressBackgroundColorSchemeColor(
             ContextCompat.getColor(
                 this,
@@ -131,11 +121,37 @@ class MainActivity : AppCompatActivity() {
 
         swipeContainer.setOnRefreshListener {
             moviesAdapter.clear()
-            getListMovies()
+            moviePresenter.getListMovie()
             setItemsData()
             recyclerView.adapter = moviesAdapter
             swipeContainer.isRefreshing = false
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        moviePresenter.detachView()
+    }
+
+    override fun onLoadMovieSuccess(movies: List<MovieDetail>) {
+        Log.d("MainActivity", "Load Movie Success")
+        moviesAdapter.appendMovies(movies)
+        attachListMoviesOnScrollListener()
+    }
+
+    override fun onError(msg: String) {
+        Log.d("MainActivity", "Load Movie Error")
+    }
+
+    override fun showError(msg: String) {
+        Log.d("showError", msg)
+    }
+
+    override fun showProgress() {
+
+    }
+
+    override fun hideProgress() {
+
+    }
 }

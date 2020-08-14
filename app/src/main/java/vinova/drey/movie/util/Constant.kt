@@ -1,6 +1,6 @@
 package vinova.drey.movie.util
 
-object Const {
+object Constant {
     const val BASE_URL = "https://api.themoviedb.org/3/"
     const val API_KEY = "8d4198e23dfae64db139355cdba0ed68"
     const val IMAGE_URL = "https://image.tmdb.org/t/p/w500"

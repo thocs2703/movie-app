@@ -2,7 +2,16 @@ package vinova.drey.movie.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Movie(
+data class Movies(
+    @SerializedName("page")
+    val page: Int,
+    @SerializedName("results")
+    val movies: List<MovieDetail>,
+    @SerializedName("total_pages")
+    val pages: Int
+)
+
+data class MovieDetail(
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")

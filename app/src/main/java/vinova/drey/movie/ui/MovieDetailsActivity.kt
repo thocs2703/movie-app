@@ -9,12 +9,9 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import com.google.android.youtube.player.*
 import vinova.drey.movie.R
-import vinova.drey.movie.model.Movie
 import vinova.drey.movie.model.Youtube
-import vinova.drey.movie.repository.MoviesRepository
-import vinova.drey.movie.repository.TrailerRepository
-import vinova.drey.movie.util.Const
-import kotlin.properties.Delegates
+import vinova.drey.movie.service.TrailerApi
+import vinova.drey.movie.util.Constant
 
 
 class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
@@ -70,14 +67,14 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
     }
 
     private fun getMovieDetails(extras: Bundle) {
-        id = (extras.getInt(Const.MOVIE_ID))
+        id = (extras.getInt(Constant.MOVIE_ID))
         Log.d("MovieDetailsActivity", "MovieID: $id")
-        titleText.text = extras.getString(Const.MOVIE_TITLE)
-        overviewText.text = extras.getString(Const.MOVIE_OVERVIEW)
-        Log.d("MovieDetailsActivity", "Overview: ${extras.getString(Const.MOVIE_OVERVIEW)}")
-        Log.d("MovieDetailsActivity", "Rating: ${extras.getString(Const.MOVIE_RATING)}")
-        rating.rating = extras.getFloat(Const.MOVIE_RATING, 0f)
-        releaseDateText.text = extras.getString(Const.MOVIE_RELEASE_DATE)
+        titleText.text = extras.getString(Constant.MOVIE_TITLE)
+        overviewText.text = extras.getString(Constant.MOVIE_OVERVIEW)
+        Log.d("MovieDetailsActivity", "Overview: ${extras.getString(Constant.MOVIE_OVERVIEW)}")
+        Log.d("MovieDetailsActivity", "Rating: ${extras.getString(Constant.MOVIE_RATING)}")
+        rating.rating = extras.getFloat(Constant.MOVIE_RATING, 0f)
+        releaseDateText.text = extras.getString(Constant.MOVIE_RELEASE_DATE)
 
 //        extras.getString(Const.MOVIE_POSTER)?.let {
 //            Glide.with(this)
@@ -125,7 +122,7 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
 
     private fun getTrailer() {
         Log.d("MovieDetailsActivity", "Get Trailer")
-        TrailerRepository.getTrailer(
+        TrailerApi.getTrailer(
             id,
             ::onTrailerFetched,
             ::onError
@@ -135,7 +132,7 @@ class MovieDetailsActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedL
     private fun onTrailerFetched(youtubeSources: List<Youtube>) {
         val firstTrailer: Youtube = youtubeSources[0]
         sourceTrailer = firstTrailer.source
-        playerView.initialize(Const.YOUTUBE_API, this)
+        playerView.initialize(Constant.YOUTUBE_API, this)
         Log.d("MovieDetailsActivity", "SourceTrailer: ${sourceTrailer}")
     }
 

@@ -11,3 +11,14 @@ data class Trailer(
     @SerializedName("youtube")
     val youtube: List<Youtube>
 )
+
+data class Youtube(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("size")
+    val size: String,
+    @SerializedName("source")
+    val source: String,
+    @SerializedName("type")
+    val type: String
+)

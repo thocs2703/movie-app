@@ -12,13 +12,13 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.item_poster.view.*
 import kotlinx.android.synthetic.main.item_video.view.*
 import vinova.drey.movie.R
-import vinova.drey.movie.model.Movie
+import vinova.drey.movie.model.MovieDetail
 import vinova.drey.movie.model.Youtube
-import vinova.drey.movie.util.Const
+import vinova.drey.movie.util.Constant
 
 class MoviesAdapter(
-    private var movies: MutableList<Movie>,
-    private var onMovieClick: (movie: Movie) -> Unit
+    private var movies: MutableList<MovieDetail>,
+    private var onMovieClick: (movie: MovieDetail) -> Unit
 ) :
     RecyclerView.Adapter<BaseViewHolder<*>>() {
 
@@ -53,7 +53,7 @@ class MoviesAdapter(
         holder.bind(movies[position])
     }
 
-    fun appendMovies(movies: List<Movie>) {
+    fun appendMovies(movies: List<MovieDetail>) {
         this.movies.addAll(movies)
         notifyItemRangeInserted(
             this.movies.size,
@@ -62,11 +62,11 @@ class MoviesAdapter(
     }
 
     inner class PortraitViewHolder(itemView: View) : BaseViewHolder<View>(itemView) {
-        override fun bind(movie: Movie) {
+        override fun bind(movie: MovieDetail) {
             itemView.titleText.text = movie.title
             itemView.overviewText.text = movie.overview
 
-            val moviePosterURL = Const.IMAGE_URL + movie.posterPath
+            val moviePosterURL = Constant.IMAGE_URL + movie.posterPath
             Glide.with(itemView.context)
                 .load(moviePosterURL)
                 .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(10, 5)))
@@ -84,7 +84,7 @@ class MoviesAdapter(
     }
 
     inner class LandScapeViewHolder(itemView: View) : BaseViewHolder<View>(itemView) {
-        override fun bind(movie: Movie) {
+        override fun bind(movie: MovieDetail) {
             val orientation = itemView.context.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Log.d("LandScapeViewHolder", "ORIENTATION_LANDSCAPE")
@@ -94,7 +94,7 @@ class MoviesAdapter(
                 Log.d("LandScapeViewHolder", "Overview ${movie.overview}")
             }
 
-            val backdropURL = Const.IMAGE_URL + movie.backdropPath
+            val backdropURL = Constant.IMAGE_URL + movie.backdropPath
             Glide.with(itemView.context)
                 .load(backdropURL)
                 .apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(10, 5)))

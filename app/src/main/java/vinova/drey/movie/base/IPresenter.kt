@@ -1,4 +1,4 @@
-package com.example.basemvp.base
+package vinova.drey.movie.base
 
 interface IPresenter<V>{
     fun attachView(view: V)
