@@ -10,8 +10,8 @@ Week 1 Project: Flicks
 
 Overview: Build a read-only movie listing app using the Movie Database API.
 
-- The Movie Database API documentation
-- Download the JSONView extension to view JSON better in your browser.
+- The Movie Database [API documentation](https://developers.themoviedb.org/3/getting-started/introduction)
+- Download the [JSONView extension](https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc?hl=en) to view JSON better in your browser.
 - Sample API Request: https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
 - Trailers API response: https://api.themoviedb.org/3/movie/209112/trailers?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
 
