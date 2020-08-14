@@ -15,22 +15,22 @@ Overview: Build a read-only movie listing app using the Movie Database API.
 - Sample API Request: https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
 - Trailers API response: https://api.themoviedb.org/3/movie/209112/trailers?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
 
-Libraries: Completing this project, requires the use of the retrofit and the Glide libraries. Add dependencies for these libraries to the app/build.gradle file.
+Libraries: Completing this project, requires the use of the [retrofit](https://guides.codepath.com/android/Consuming-APIs-with-Retrofit) and the [Glide](https://github.com/bumptech/glide) libraries. Add dependencies for these libraries to the [app/build.gradle](https://github.com/codepath/android-rest-client-template/blob/master/app/build.gradle#L30-L32) file.
 
 - Be sure to include a README containing a GIF walkthrough of your app.
-- Use this README template in order to have a complete README.
+- Use [this README template](https://drive.google.com/open?id=1KShhsBlNorK4xzNLk-sMxNPGln2Ziin0) in order to have a complete README.
 
 User Stories:
 
 The following user stories must be completed:
 
 - User can view a list of movies (title, poster image, and overview) currently playing in theaters from the Movie Database API.
-- Lists should be fully optimized for performance with Recyclerview.
-- Views should be responsive for both landscape/portrait mode.
+- Lists should be fully optimized for performance with [Recyclerview](https://guides.codepath.com/android/Using-the-RecyclerView).
+- Views should be responsive for both [landscape/portrait mode](http://guides.codepath.com/android/Understanding-App-Resources#creating-alternate-resources).
 	- In portrait mode, the poster image, title, and movie overview is shown.
-	  
+	  [](https://www.evernote.com/shard/s372/sh/0cc65273-181d-4e16-9ce7-f3e72a8c8dd6/527f4a06efa1f40c/res/f2e0c83e-b715-4796-8a83-cc42018caff5)
 	- In landscape mode, the rotated layout should use the backdrop image instead and show the title and movie overview to the right of it.
-	  
+	  [](https://www.evernote.com/shard/s372/sh/0cc65273-181d-4e16-9ce7-f3e72a8c8dd6/527f4a06efa1f40c/res/4dbb5d76-f3c0-4ecf-b686-58e09a087310)
 
 The following advanced user stories are optional but recommended:
 
